@@ -212,29 +212,27 @@ function GuestApp({ tokenParam }){
 // =================== HOST ===================
 function Login(){
   const [email,setEmail]=useState("");
-  const [sent,setSent]=useState(false);
+  const [pw,setPw]=useState("");
   const [err,setErr]=useState("");
-  const ok = /\S+@\S+\.\S+/.test(email);
+  const [busy,setBusy]=useState(false);
+  const ok = /\S+@\S+\.\S+/.test(email) && pw.length>=6;
   async function go(){
-    setErr("");
-    const { error } = await sb.auth.signInWithOtp({ email: email.trim(), options:{ emailRedirectTo: location.origin } });
-    if(error) setErr(error.message); else setSent(true);
+    setErr(""); setBusy(true);
+    const { error } = await sb.auth.signInWithPassword({ email: email.trim(), password: pw });
+    setBusy(false);
+    if(error) setErr(error.message);
   }
   return (
     <div className="wrap"><div className="card" style={{padding:"44px 22px",display:"flex",flexDirection:"column",justifyContent:"center",minHeight:"100vh"}}>
       <div className="h1" style={{fontSize:34}}>Candid</div>
       <div style={{fontSize:14,color:"var(--muted)",marginTop:8,marginBottom:24}}>Host sign in</div>
-      {sent ? (
-        <div style={{padding:"16px",borderRadius:12,background:"var(--inkSoft)",lineHeight:1.5}}>
-          Check your email and tap the sign-in link. You can close this tab — the link opens Candid logged in.
-          <div style={{margintop:10}}><button className="lbtn" style={{marginTop:12}} onClick={()=>setSent(false)}>Use a different email</button></div>
-        </div>
-      ) : (<>
-        <input className="field" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@email.com" inputMode="email" autoCapitalize="off"
-          onKeyDown={e=>{ if(e.key==="Enter"&&ok) go(); }}/>
-        <button className="btn btn-coral" style={{marginTop:14,opacity:ok?1:.5}} disabled={!ok} onClick={go}>Email me a sign-in link</button>
-        {err && <div style={{marginTop:12,color:"var(--coral)",fontSize:13}}>{err}</div>}
-      </>)}
+      <input className="field" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@email.com" inputMode="email" autoCapitalize="off" autoComplete="username"/>
+      <input className="field" style={{marginTop:10}} type="password" value={pw} onChange={e=>setPw(e.target.value)} placeholder="Password" autoComplete="current-password"
+        onKeyDown={e=>{ if(e.key==="Enter"&&ok) go(); }}/>
+      <button className="btn btn-coral" style={{marginTop:14,opacity:ok&&!busy?1:.5}} disabled={!ok||busy} onClick={go}>
+        {busy ? <span className="spin"></span> : "Sign in"}
+      </button>
+      {err && <div style={{marginTop:12,color:"var(--coral)",fontSize:13}}>{err}</div>}
     </div></div>
   );
 }
