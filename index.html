@@ -15,12 +15,12 @@
 <style>
   :root { --ink:#1A1726; --inkSoft:#241F33; --paper:#FBFAF8; --muted:#8A8597; --coral:#FF5C49; --amber:#FFC24B; --line:rgba(255,255,255,0.08); --lineLight:#ECE8E1; }
   * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body { margin:0; padding:0; background:#0E0B14; color:var(--paper); font-family:Inter,system-ui,sans-serif; }
+  html,body { margin:0; padding:0; background:var(--ink); color:var(--paper); font-family:Inter,system-ui,sans-serif; }
   #root { min-height:100vh; }
   input,textarea,button,select { font-family:inherit; }
   ::placeholder { color:var(--muted); }
   *:focus-visible { outline:2px solid var(--amber); outline-offset:2px; }
-  .wrap { width:100%; max-width:440px; margin:0 auto; min-height:100vh; }
+  .wrap { width:100%; max-width:440px; margin:0 auto; min-height:100vh; padding-top:env(safe-area-inset-top); padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right); padding-bottom:env(safe-area-inset-bottom); box-sizing:border-box; }
   .card { background:var(--ink); min-height:100vh; }
   .btn { border:none; border-radius:12px; font-weight:700; font-size:15px; cursor:pointer; padding:14px; width:100%; }
   .btn-coral { background:var(--coral); color:#fff; }
