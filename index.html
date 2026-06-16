@@ -547,6 +547,43 @@ function Root(){
 ReactDOM.createRoot(document.getElementById("root")).render(<Root/>);
 
 if("serviceWorker" in navigator){ window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{})); }
+
+// ---- pull-to-refresh (home-screen app has no browser refresh) ----
+(function(){
+  let startY=0, pulling=false, ready=false;
+  const ind=document.createElement("div");
+  ind.style.cssText="position:fixed;top:0;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:999;transform:translateY(-60px);transition:transform .2s ease;";
+  ind.innerHTML='<div style="margin-top:calc(env(safe-area-inset-top) + 8px);width:34px;height:34px;border-radius:50%;background:#241F33;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.45)"><div id="ptrSpin" style="width:17px;height:17px;border:2.5px solid rgba(255,255,255,.25);border-top-color:#FF5C49;border-radius:50%"></div></div>';
+  document.body.appendChild(ind);
+  const TH=80;
+  const atTop=()=>(document.scrollingElement||document.documentElement).scrollTop<=0;
+  window.addEventListener("touchstart",(e)=>{
+    if(document.querySelector(".modal-bg")){ pulling=false; return; }
+    if(atTop()){ startY=e.touches[0].clientY; pulling=true; ready=false; } else pulling=false;
+  },{passive:true});
+  window.addEventListener("touchmove",(e)=>{
+    if(!pulling) return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy>0 && atTop()){
+      ind.style.transition="none";
+      ind.style.transform="translateY("+Math.min(-60+dy,16)+"px)";
+      document.getElementById("ptrSpin").style.transform="rotate("+(dy*2.4)+"deg)";
+      ready=dy>TH;
+    }
+  },{passive:true});
+  window.addEventListener("touchend",()=>{
+    if(!pulling) return;
+    pulling=false;
+    ind.style.transition="transform .2s ease";
+    if(ready){
+      ind.style.transform="translateY(16px)";
+      document.getElementById("ptrSpin").style.animation="sp .8s linear infinite";
+      setTimeout(()=>location.reload(),350);
+    } else {
+      ind.style.transform="translateY(-60px)";
+    }
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
