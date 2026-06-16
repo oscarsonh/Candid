@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Candid test</title>
+</head>
+<body style="font-family:-apple-system,system-ui,sans-serif;background:#1A1726;color:#fff;padding:30px;line-height:1.5">
+<div id="root">Loading… (if this never changes, the scripts didn't load)</div>
+<script>
+  window.addEventListener('error', function(e){
+    document.getElementById('root').innerHTML =
+      '<b style="color:#FF5C49">JS error:</b><br>' + (e.message || e) +
+      '<br><small>' + (e.filename || '') + ' : ' + (e.lineno || '') + '</small>';
+  });
+</script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+function Test(){
+  return (
+    <div>
+      <h2 style={{color:'#5FD0A6'}}>Candid pipeline works</h2>
+      <p>React loaded: {String(!!window.React)}</p>
+      <p>ReactDOM loaded: {String(!!window.ReactDOM)}</p>
+      <p>Supabase loaded: {String(!!window.supabase)}</p>
+      <p>If you can read this, the app should run fine.</p>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<Test/>);
+</script>
+</body>
+</html>
